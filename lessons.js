@@ -67,6 +67,7 @@ let lessons = [
         Image:'Images/French.png',
         availableInventory:5,
         rating:3,
+        quantity:1,
     },
     {
         id:"1008",
@@ -76,6 +77,7 @@ let lessons = [
         Image:'Images/Spanish.png',
         availableInventory:5,
         rating:3,
+        quantity:1,
     },
     {
         id:"1009",
@@ -94,5 +96,6 @@ let lessons = [
         Image:'Images/Business.png',
         availableInventory:5,
         rating:3,
+        quantity:1,
     },
 ]
