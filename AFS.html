@@ -6,6 +6,142 @@
     <script src="lessons.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="style.css">
-
     </head>
+    <body>
+        <header class="header">
+          <h1  style="text-align: center;font-weight: bold;"> AFTER SCHOOL CLUB</h1>
+        </header> 
+        <div id="app" >
+          <div class="lower-header">
+                <button v-on:click="showCheckout" class="button" >{{ cartItemCount }}&nbsp<span class="fa fa-shopping-cart" >&nbsp CART</span></button>
+            </div>
+            <div v-if="showLesson" class="row">   
+                <div  v-for="lesson in searchFilter">
+                    <div class="column" >
+                        <img  v-bind:src="lesson.Image" style="margin-left: 10%;">
+                        <div class="text" style="display: inline-block;margin-left: 10%;">
+                            <h2 v-text="lesson.subject"></h2>
+                            <h3 v-text="lesson.location">London</h3>
+                            <p>Price: {{lesson.price}}</p>
+                            <p>Spaces Available: {{lesson.availableInventory}}</p>
+                            <button class="addtoCartButton" v-on:click="addToCart(lesson)" v-if="canAddtoCart(lesson)">ADD TO CART</button>
+                            <button class="addtoCartButton" disabled='disabled' v-else>ADD TO CART</button>
+                            <span v-if="lesson.availableInventory === cartCount(lesson.id)">
+                            <strong>&nbsp No Stock Available</strong> 
+                            </span>
+                            <span v-else-if="lesson.availableInventory - cartCount(lesson.id) < 5">
+                            <strong>&nbsp Only {{lesson.availableInventory - cartCount(lesson.id)}} left!</strong>
+                            </span>
+                            <span v-else>
+                            <strong>&nbsp BUY NOW! </strong>
+                            </span>
+                            <div>
+                                <span v-for="n in lesson.rating">★</span>
+                                <span v-for="n in 5 - lesson.rating">☆</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div v-else="showCheckout">
+                    <div class="row" style="padding: 1%">
+                        <h1>CHECKOUT</h1>
+                        <div class="row" style="padding: 1%; border: none;box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);" v-if="cartItemCount == 0">
+                        <p style="margin: auto; text-align: center;"><strong>NO ITEMS IN CART </strong></p>
+                    </div>
+                    <div class="row" v-else >
+                        <div  v-for="(lesson, index) in cart" :key="index">
+                            <div class="column" >
+                                <img  v-bind:src="lesson.Image" style="margin-left: 10%;">
+                                    <div class="text" style="display: inline-block;margin-left: 10%;">
+                                        <h2 v-text="lesson.subject"></h2>
+                                        <h3 v-text="lesson.location">London</h3>
+                                        <p>Price: {{lesson.price}}</p>
+                                        <p>Quantity: {{lesson.quantity}}</p>
+                                        <button class="addtoCartButton"v-on:click="removeFromCart(index,lesson)">Remove from Cart</button>
+                                        <span v-for="n in lesson.rating">★</span>
+                                        <span v-for="n in 5 - lesson.rating">☆</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br> 
+                        <button v-if="cartItemCount != 0" class="button" v-on:click="submitForm">PLACE ORDER</button>
+                        <button class="button" disabled='disabled' v-else>PLACE ORDER</button>
+                    </div>
+                    <div class="row" style="padding: 1%;"> 
+                        <div style="padding: 1%;float: left; width: 49%; border: none; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); background-color: white;"> 
+                            <h1>User Credentials</h1>
+                            <div class="row" style="border: none;">
+                                <div style="float:left">
+                                    <p>
+                                        <strong>First Name:</strong>
+                                        <input v-model.trim="order.firstName">
+                                    </p>
+                                    <p>
+                                        <strong>Last Name:</strong>
+                                        <input v-model.trim="order.lastName">
+                                    </p>
+                                    <p>
+                                        <strong>Email:</strong>
+                                        <input v-model.trim="order.email">
+                                    </p>
+                                    <p>
+                                        <input type="checkbox" id="gift" value="false" v-model="order.Gift" v-bind:true-value="order.SendGift" 
+                                        v-bind:false-value="order.dontSendGift">
+                                        <label for="gift">Send as Gift?</label>
+                                    </p>
+                                    <p>
+                                        <input type="radio" id="home" value="Home" v-model="order.Method">
+                                        <label for="home">Home</label>
+                                        <br>
+                                        <input type="radio" id="Business" value="Business" v-model="order.Method">
+                                        <label for="Business">Business</label>
+                                    </p>
+                                </div>
+                                <div style="float:right;">
+                                    <p>
+                                        <strong>Address:</strong>
+                                        <input v-model="order.Address">
+                                    </p>
+                                    <p>
+                                        <strong>City:</strong>
+                                        <input v-model="order.City">
+                                    </p>
+                                    <p >
+                                        <strong>State:</strong>
+                                        <select v-model="order.State" style="width: 100%;">
+                                            <option disabled value="State">State</option>
+                                            <option v-for="(State,key) in State" v-bind:value="State">{{key}}</option>
+                                        </select>
+                                    </p>
+                                    <p>
+                                    <strong>Postal Code:</strong>
+                                    <input v-model.number="order.PostalCode" type="number">
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="float: right; width: 49%; padding: 1%; border: none;box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); background-color: white; margin-left: 1%;">
+                            <h1>Order Details</h1>
+                            <div class="row" style="border: none; padding: 1%;">
+                                <div style="float:left">
+                                    <p>Frist Name: <strong> {{order.firstName}}</strong></p>
+                                    <p>Last Name: <strong>{{order.lastName}}</strong></p>
+                                    <p>Email: <strong>{{order.email}}</strong></p>
+                                    <p>Send As Gift? <strong>{{order.Gift}}</strong></p>
+                                    <p>Method: <strong>{{order.Method}}</strong></p>
+                                </div>
+                                <div style="float:right">
+                                    <p>Address: <strong> {{order.Address}}</strong></p>
+                                    <p>City: <strong> {{order.City}}</strong></p>
+                                    <p>State: <strong>{{order.State}}</strong></p>
+                                    <p>Postal Code: <strong>{{order.PostalCode}}</strong></p>     
+                                </div>
+                            </div>
+                        </div>
+                    </div>        
+            </div>
+        </div>
+    </body>
 </html>
