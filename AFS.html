@@ -14,6 +14,19 @@
         <div id="app" >
             <div class="lower-header">
                 <button v-on:click="showCheckout" class="button" >{{ cartItemCount }}&nbsp<span class="fa fa-shopping-cart" >&nbsp CART</span></button>
+                <div class="filterDrpdwn">
+                    <button class="filterDrpdwnBtn">FILTER</button>
+                    <div class="filterDrpdwn-content">
+                        <a href="#" @click="sortByName('subject')">Name</a>
+                        <a href="#" @click="sortByPrice('price')">Price</a>
+                        <div class="filterGroup" style="padding: 1%;">
+                            <input type="radio" id="Ascending" value="Ascending" name="filter" checked>
+                            <label for="Ascending">Ascending</label>
+                            <input type="radio" id="Descending" value="Descending" name="filter">
+                            <label for="Descending">Descending</label>
+                        </div>
+                    </div>
+                  </div>
                 <span><input class="Search" type="text" v-model="searchString" placeholder="Search..."></span>
             </div>
             <div v-if="showLesson" class="row">   
@@ -176,6 +189,14 @@
             },
     
             methods:{
+                sortByName(prop){
+                     if(document.getElementById("Ascending").checked){
+                        this.lesson.sort((a,b)=> a[prop] > b[prop] ? 1 : -1);
+                        }
+                    else if(document.getElementById("Descending").checked){
+                        this.lesson.sort((a,b)=> a[prop] < b[prop] ? 1 : -1);
+                    }
+                },
                 addToCart: function (lesson){
                   if(lesson.availableInventory > 0){
                     let itemFound = this.cart.find(item => item.id == lesson.id);
