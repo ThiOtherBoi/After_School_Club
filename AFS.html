@@ -144,4 +144,86 @@
             </div>
         </div>
     </body>
+    <script>
+        var webstore = new Vue({
+            el:"#app",
+            data:{
+                showLesson:"true",
+                sitename:"After School Club",
+                searchString:"",
+                order: {
+                    firstName:'',
+                    lastName:'',
+                    email:'',
+                    Address:'',
+                    City:'',
+                    PostalCode:'',
+                    Method:'Home',
+                    Gift:"Do Not Send As A Gift",
+                    SendGift:"Send As A Gift",
+                    dontSendGift:"Do Not Send As A Gift",
+                },
+    
+                State:{
+                        AL:"Alabama",
+                        AR:"Arizona",
+                        CA:"California",
+                        NV:"Nevada",
+                },
+                lesson: lessons,
+                cart:[],
+            },
+    
+            methods:{
+                addToCart: function (lesson){
+                  if(lesson.availableInventory > 0){
+                    let itemFound = this.cart.find(item => item.id == lesson.id);
+    
+                    if(itemFound){
+                    itemFound.quantity++;
+                    }
+                    else{
+                      this.cart.push(lesson);
+                    }
+                    lesson.availableInventory--;
+                  }
+                },
+                
+                removeFromCart(index,lesson){
+                  lesson.quantity--;
+                  lesson.availableInventory++;
+                  if(lesson.quantity == 0){
+                    this.cart.splice(index,1)
+                  } 
+                },
+    
+                showCheckout: function (){
+                    this.showLesson = this.showLesson ? false : true;
+                },
+    
+                submitForm: function (){
+                    alert("Order Placed");
+                },
+                canAddtoCart : function (lesson){
+                    return lesson.availableInventory > this.cartCount(lesson.id);    
+                }, 
+                cartCount(id){
+                    let count=0;
+                    for(let i= 0; i < this.cart.length;i++){
+                        if(this.cart[i] === id){
+                            count++;
+                        }
+                    }
+                    return count;
+                }  
+                    
+            },
+            computed: {
+                cartItemCount: function (){
+                    return this.cart.length || 0;
+                },
+              },
+         })
+    
+    </script>
 </html>
