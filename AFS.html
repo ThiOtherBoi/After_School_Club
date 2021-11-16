@@ -197,6 +197,16 @@
                         this.lesson.sort((a,b)=> a[prop] < b[prop] ? 1 : -1);
                     }
                 },
+
+                sortByPrice(prop){
+                    if(document.getElementById("Ascending").checked){
+                        this.lesson.sort((a,b)=> a[prop] > b[prop] ? 1 : -1);
+                    }
+                    else if(document.getElementById("Descending").checked){
+                        this.lesson.sort((a,b)=> a[prop] < b[prop] ? 1 : -1);
+                    }
+                },
+                
                 addToCart: function (lesson){
                   if(lesson.availableInventory > 0){
                     let itemFound = this.cart.find(item => item.id == lesson.id);
