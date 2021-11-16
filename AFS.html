@@ -17,7 +17,8 @@
                 <div class="filterDrpdwn">
                     <button class="filterDrpdwnBtn">FILTER</button>
                     <div class="filterDrpdwn-content">
-                        <a href="#" @click="sortByName('subject')">Name</a>
+                        <a href="#" @click="sort('subject')">Name</a>
+                        <a href="#" @click="sort('location')">L ocation</a>
                         <a href="#" @click="sortByPrice('price')">Price</a>
                         <div class="filterGroup" style="padding: 1%;">
                             <input type="radio" id="Ascending" value="Ascending" name="filter" checked>
@@ -79,9 +80,8 @@
                                 </div>
                             </div>
                         </div>
-                        <br> 
-                        <button v-if="cartItemCount != 0" class="button" v-on:click="submitForm">PLACE ORDER</button>
-                        <button class="button" disabled='disabled' v-else>PLACE ORDER</button>
+                        <br>
+                         <h2 style="margin-left: 1%;" >TOTAL: $ {{totalprice}}</h2>
                     </div>
                     <div class="row" style="padding: 1%;"> 
                         <div style="padding: 1%;float: left; width: 49%; border: none; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); background-color: white;"> 
@@ -97,8 +97,8 @@
                                         <input v-model.trim="order.lastName">
                                     </p>
                                     <p>
-                                        <strong>Email:</strong>
-                                        <input v-model.trim="order.email">
+                                        <strong>Contact:</strong>
+                                        <input id="phoneNumber" @change="checkPhone();"v-model.trim="order.phone">
                                     </p>
                                     <p>
                                         <input type="checkbox" id="gift" value="false" v-model="order.Gift" v-bind:true-value="order.SendGift" 
@@ -142,7 +142,7 @@
                                 <div style="float:left">
                                     <p>Frist Name: <strong> {{order.firstName}}</strong></p>
                                     <p>Last Name: <strong>{{order.lastName}}</strong></p>
-                                    <p>Email: <strong>{{order.email}}</strong></p>
+                                    <p>Contact Number: <strong>{{order.phone}}</strong></p>
                                     <p>Send As Gift? <strong>{{order.Gift}}</strong></p>
                                     <p>Method: <strong>{{order.Method}}</strong></p>
                                 </div>
@@ -154,7 +154,11 @@
                                 </div>
                             </div>
                         </div>
-                    </div>        
+                    </div>     
+                    <br>   
+                    <button style="margin-left: 1%;" v-if="cartItemCount != 0" class="button" v-on:click="submitForm">PLACE ORDER</button>
+                    <button style="margin-left: 1%;" class="button" disabled='disabled' v-else>PLACE ORDER</button>
+                    <br>
             </div>
         </div>
     </body>
@@ -168,7 +172,7 @@
                 order: {
                     firstName:'',
                     lastName:'',
-                    email:'',
+                    phone:'',
                     Address:'',
                     City:'',
                     PostalCode:'',
@@ -189,7 +193,7 @@
             },
     
             methods:{
-                sortByName(prop){
+                sort(prop){
                      if(document.getElementById("Ascending").checked){
                         this.lesson.sort((a,b)=> a[prop] > b[prop] ? 1 : -1);
                         }
@@ -206,7 +210,7 @@
                         this.lesson.sort((a,b)=> a[prop] < b[prop] ? 1 : -1);
                     }
                 },
-                
+
                 addToCart: function (lesson){
                   if(lesson.availableInventory > 0){
                     let itemFound = this.cart.find(item => item.id == lesson.id);
@@ -226,6 +230,7 @@
                   lesson.availableInventory++;
                   if(lesson.quantity == 0){
                     this.cart.splice(index,1)
+                    lesson.quantity = 1;
                   } 
                 },
     
@@ -247,7 +252,8 @@
                         }
                     }
                     return count;
-                }  
+                },
+               
                     
             },
             computed: {
@@ -258,6 +264,13 @@
                     return this.lesson.filter((lesson) => {
                     return lesson.subject.toLowerCase().includes(this.searchString) || lesson.location.toLowerCase().includes(this.searchString);
                     });
+                },
+                totalprice(){
+                    let finaltot = 0;
+                    this.cart.forEach((lesson,i) => {
+                        finaltot += lesson.price * lesson.quantity;
+                    });
+                    return finaltot;
                 }
               },
          })
