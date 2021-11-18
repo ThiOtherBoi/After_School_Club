@@ -14,7 +14,7 @@ let lessons = [
         subject:'History',
         location:'Essex',
         price:90,
-        Image:'Images/HISTORY.png',
+        Image:'Images/History.png',
         availableInventory:5,
         rating:3,
         quantity:1,
