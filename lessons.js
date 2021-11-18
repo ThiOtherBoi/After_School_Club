@@ -87,6 +87,8 @@ let lessons = [
         Image:'Images/Arabic.png',
         availableInventory:5,
         rating:3,
+        quantity:1,
+
     },
     {
         id:"1010",

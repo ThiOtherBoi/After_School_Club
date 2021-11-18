@@ -20,6 +20,7 @@
                         <a href="#" @click="sort('subject')">Name</a>
                         <a href="#" @click="sort('location')">Location</a>
                         <a href="#" @click="sort('price')">Price</a>
+                        <a href="#" @click="sort('availableInventory')">Spaces Available</a>
                         <div class="filterGroup" style="padding: 1%;">
                             <input type="radio" id="Ascending" value="Ascending" name="filter" checked>
                             <label for="Ascending">Ascending</label>
@@ -41,13 +42,13 @@
                             <p>Spaces Available: {{lesson.availableInventory}}</p>
                             <button class="addtoCartButton" v-on:click="addToCart(lesson)" v-if="canAddtoCart(lesson)">ADD TO CART</button>
                             <button class="addtoCartButton" style="background-color:rgb(56, 55, 55)" disabled='disabled' v-else>ADD TO CART</button>
-                            <span v-if="lesson.availableInventory === cartCount(lesson.id)">
+                            <span v-if="lesson.availableInventory === cartCount(lesson.id)" style="color: red;">
                             <strong>&nbsp No Stock Available</strong> 
                             </span>
-                            <span v-else-if="lesson.availableInventory - cartCount(lesson.id) < 5">
+                            <span v-else-if="lesson.availableInventory - cartCount(lesson.id) < 5" style="color: rgb(240, 217, 11);">
                             <strong>&nbsp Only {{lesson.availableInventory - cartCount(lesson.id)}} left!</strong>
                             </span>
-                            <span v-else>
+                            <span v-else style="color: rgb(32, 170, 4);">
                             <strong>&nbsp BUY NOW! </strong>
                             </span>
                             <div>
@@ -89,16 +90,12 @@
                             <div class="row" style="border: none;">
                                 <div style="float:left">
                                     <p>
-                                        <strong>First Name:</strong>
-                                        <input v-model.trim="order.firstName">
+                                        <strong>Full Name:</strong>
+                                        <input id="fullName" @change="checkCredentials();" v-model.trim="order.fullName">
                                     </p>
                                     <p>
-                                        <strong>Last Name:</strong>
-                                        <input v-model.trim="order.lastName">
-                                    </p>
-                                    <p>
-                                        <strong>Contact:</strong>
-                                        <input id="phoneNumber" @change="checkPhone();"v-model.trim="order.phone">
+                                        <strong>Contact Number:</strong>
+                                        <input id="phoneNumber" @change="checkCredentials();" v-model.trim="order.phone">
                                     </p>
                                     <p>
                                         <input type="checkbox" id="gift" value="false" v-model="order.Gift" v-bind:true-value="order.SendGift" 
@@ -140,8 +137,7 @@
                             <h1>Order Details</h1>
                             <div class="row" style="border: none; padding: 1%;">
                                 <div style="float:left">
-                                    <p>Frist Name: <strong> {{order.firstName}}</strong></p>
-                                    <p>Last Name: <strong>{{order.lastName}}</strong></p>
+                                    <p>Full Name: <strong> {{order.fullName}}</strong></p>
                                     <p>Contact Number: <strong>{{order.phone}}</strong></p>
                                     <p>Send As Gift? <strong>{{order.Gift}}</strong></p>
                                     <p>Method: <strong>{{order.Method}}</strong></p>
@@ -156,8 +152,8 @@
                         </div>
                     </div>     
                     <br>   
-                    <button style="margin-left: 1%; background-color: black;color: white;" v-if="cartItemCount != 0" class="button" v-on:click="submitForm">PLACE ORDER</button>
-                    <button style="margin-left: 1%; background-color: rgb(56, 55, 55);color: white;" class="button" disabled='disabled' v-else>PLACE ORDER</button>
+                    <button id="submitButton" style="margin-left: 1%; background-color: black;color: white;" v-if="cartItemCount != 0" class="button" v-on:click="submitForm">PLACE ORDER</button>
+                    <button id="submitButton" style="margin-left: 1%; background-color: rgb(56, 55, 55);color: white;visibility: hidden;" class="button" disabled='disabled' v-else>PLACE ORDER</button>
                     <br>
             </div>
         </div>
@@ -244,6 +240,28 @@
                         }
                     }
                     return count;
+                },
+
+                checkCredentials(){
+                    let nameInput = document.getElementById("fullName").value;
+                    let lettersRegex = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/;
+
+                    let phoneInput = document.getElementById("phoneNumber").value;
+                    let numbersRegex = /^[0-9]+$/;
+
+                    if(!nameInput.match(lettersRegex)){
+                        alert("Name not valid. Please enter non numeric values.")
+                        document.getElementById("submitButton").style.visibility = "hidden";
+
+                    }
+                    else if (!phoneInput.match(numbersRegex)){
+                        alert("Phone not valid. Please enter numeric values.")
+                        document.getElementById("submitButton").style.visibility = "hidden";
+
+                    }
+                    else if (nameInput.match(lettersRegex) && phoneInput.match(numbersRegex)){
+                        document.getElementById("submitButton").style.visibility = "visible";
+                    }
                 },
                
                     
