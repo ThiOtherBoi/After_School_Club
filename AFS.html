@@ -210,6 +210,7 @@
                       this.cart.push(lesson);
                     }
                     lesson.availableInventory--;
+                    
                   }
                 },
                 
@@ -227,7 +228,10 @@
                 },
     
                 submitForm(){
-                    alert("Order Placed");
+                    // alert("Order Placed");
+                    console.log(this.cart[0].availableInventory);
+                    console.log(this.cart);
+
                 },
                 canAddtoCart(lesson){
                     return lesson.availableInventory > this.cartCount(lesson.id);    
